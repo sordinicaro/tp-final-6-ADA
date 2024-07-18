@@ -55,12 +55,11 @@ abstract class UserController {
     static async updateUser(req: Request, res: Response) {
         const { id } = req.params;
         const userData = req.body;
-    
+
         try {
-            // Extraer las propiedades específicas que se pueden actualizar
+
             const { username, fullname, password, email, nationality } = req.body;
-            
-            // Validar los datos que se pueden actualizar
+
             const dataToValidate = {
                 username,
                 fullname,
@@ -68,29 +67,28 @@ abstract class UserController {
                 email,
                 nationality,
             };
-    
+
             const validatedData = validatePartialUser(dataToValidate);
             if (!validatedData.success) {
                 logger.error("Wrong credentials");
                 return res.status(400).json({ message: "Wrong credentials" });
             }
-    
-            // Actualizar el usuario en la base de datos
+
             const result = await User.updateUser(id, userData);
             if (!result) {
                 logger.error("User not found or no changes made");
                 return res.status(404).json({ message: 'User not found or no changes made' });
             }
-    
+
             logger.info("User updated successfully");
             return res.status(200).json({ message: 'User updated successfully' });
-    
+
         } catch (error) {
             logger.error("Error updating user", error);
             return res.status(500).json({ error: 'Error updating user' });
         }
     }
-    
+
 
     static async deleteUser(req: Request, res: Response) {
         const { id } = req.params;
